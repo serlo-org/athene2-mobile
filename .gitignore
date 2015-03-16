@@ -6,4 +6,4 @@ bower_components
 app/config.js
 
 ## editors
-*.sublime-
+*.sublime-*
