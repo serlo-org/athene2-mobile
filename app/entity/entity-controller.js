@@ -1,5 +1,5 @@
 'use strict';
-angular.module('entity.controller', ['ngSanitize', 'entity.service', 'entity.directive'])
+angular.module('entity.controller', ['entity.service', 'entity.directive'])
   .controller('EntityController', ['$routeParams', 'EntityService', function($routeParams, EntityService) {
     var self = this;
     var id = $routeParams.id;
