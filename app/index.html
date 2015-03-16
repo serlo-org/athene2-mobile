@@ -8,8 +8,17 @@
     <!-- endbuild -->  </head>
   <body ng-app="athene2MobileApp">
 
+    <div ng-view></div>
+
     <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular-route/angular-route.min.js"></script>
     <!-- build:js({.tmp,app}) scripts/app.js -->
+    <script src="entity/entity-controller.js"></script>
+    <script src="entity/entity-compile-directive.js"></script>
+    <script src="entity/entity-directive.js"></script>
+    <script src="entity/entity-service.js"></script>
+    <script src="entity/injection/injection-directive.js"></script>
+    <script src="config.js"></script>
     <script src="app.js"></script>
     <!-- endbuild -->
   </body>
