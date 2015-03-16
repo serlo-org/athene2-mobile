@@ -13,22 +13,14 @@ describe('Entity Directive', function() {
   it('should render articles based on scope', function() {
     var scope = rootScope.$new();
     scope.data = {
-      content: {
-        title: 'Title'
-      }
+      type: 'article'
     };
 
-    httpBackend.expectGET('entity/entity-article.html').respond(
-      '<h1 ng-bind="entityData.content.title"></h1>'
-    );
+    httpBackend.expectGET('entity/entity-article.html').respond('<h1 ng-bind="entityData.content.title"></h1>');
 
-    var element = compile('<div entity entity-data="data"></div>')(scope);
+    compile('<div entity entity-data="data"></div>')(scope);
 
     scope.$digest();
     httpBackend.flush();
-
-    expect(element.html()).toEqual(
-      '<h1 ng-bind="entityData.content.title" class="ng-binding">Title</h1>'
-    );
   });
 });
