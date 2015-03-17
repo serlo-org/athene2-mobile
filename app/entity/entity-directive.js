@@ -1,38 +1,25 @@
 'use strict';
-angular.module('entity.directive', ['entity.compileDirective', 'entity.injection.directive'])
-  .directive('entity', ['$compile', '$http', '$templateCache', function($compile, $http, $templateCache) {
-
+angular.module('entity.directive', ['entity.service', 'entity.compileDirective', 'entity.injection.directive'])
+  .directive('entity', ['EntityService', '$compile', '$http', '$templateCache', function(EntityService, $compile, $http, $templateCache) {
     var getTemplate = function(contentType) {
-      var templateLoader;
-      var baseUrl = 'entity/';
-      var templateMap = {
-        article: 'entity-article.html'
-      };
-
-      var templateUrl = baseUrl + templateMap[contentType];
-      templateLoader = $http.get(templateUrl, { cache: $templateCache });
-
-      return templateLoader;
+      return $http.get('entity/entity-' + contentType + '.html', { cache: $templateCache });
     };
 
     return {
       restrict: 'A',
       link: function($scope, $element) {
-        $scope.$watch('entityData', function(data) {
-          console.log(data);
-          if (data) {
-            var loader = getTemplate(data.type);
+        EntityService.get($scope.entity).then(function(data) {
+          $scope.data = data;
 
-            loader.success(function(html) {
-              $element.html(html);
-            }).then(function() {
-              $element.replaceWith($compile($element.html())($scope));
-            });
-          }
+          getTemplate(data.type).success(function(html) {
+            $element.html(html);
+          }).then(function() {
+            $element.replaceWith($compile($element.html())($scope));
+          });
         });
       },
       scope: {
-        entityData: '='
+        entity: '='
       }
     };
   }]);
