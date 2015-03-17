@@ -2,33 +2,37 @@
 describe('Entity Directive', function() {
   beforeEach(module('entity.directive'));
 
-  var compile, httpBackend, rootScope;
+  var service, compile, httpBackend, rootScope;
 
-  beforeEach(inject(function($compile, $httpBackend, $rootScope) {
+  beforeEach(inject(function($injector, $compile, $httpBackend, $rootScope) {
     compile = $compile;
     httpBackend = $httpBackend;
     rootScope = $rootScope;
+
+    service = $injector.get('EntityService');
   }));
 
-  it('should render articles based on scope', function() {
+  it('should render articles based on given id', inject(function($q) {
+    spyOn(service, 'get').and.callFake(function() {
+      var deferred = $q.defer();
+      deferred.resolve({id: 1, type: 'article', content: {title: 'Title'}});
+      return deferred.promise;
+    });
+
     var scope = rootScope.$new();
-    scope.data = {
-      content: {
-        title: 'Title'
-      }
-    };
+    scope.id = 1;
 
-    httpBackend.expectGET('entity/entity-article.html').respond(
-      '<h1 ng-bind="entityData.content.title"></h1>'
-    );
+    httpBackend.expectGET('entity/entity-article.html').respond('<h1 ng-bind="data.content.title"></h1>');
 
-    var element = compile('<div entity entity-data="data"></div>')(scope);
+    compile('<div entity="id"></div>')(scope);
+    expect(service.get).toHaveBeenCalledWith(1);
 
     scope.$digest();
     httpBackend.flush();
+  }));
 
-    expect(element.html()).toEqual(
-      '<h1 ng-bind="entityData.content.title" class="ng-binding">Title</h1>'
-    );
+  afterEach(function() {
+    httpBackend.verifyNoOutstandingExpectation();
+    httpBackend.verifyNoOutstandingRequest();
   });
 });
