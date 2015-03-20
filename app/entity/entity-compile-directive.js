@@ -9,6 +9,7 @@ angular.module('entity.compileDirective', [])
         function(value) {
           element.html(value);
           $compile(element.contents())(scope);
+          MathJax.Hub.Queue(['Typeset', MathJax.Hub, element[0]]);
         }
       );
     };

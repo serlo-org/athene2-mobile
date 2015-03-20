@@ -19,7 +19,8 @@
     "jasmine": false,
     "spyOn": false,
     "marked": false,
-    "window": false
+    "window": false,
+    "MathJax": false
   },
   "immed": true,
   "indent": 2,
