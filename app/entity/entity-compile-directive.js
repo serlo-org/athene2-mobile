@@ -3,7 +3,9 @@ angular.module('entity.compileDirective', ['config'])
   .directive('compile', ['$compile', 'API_HOST', function ($compile, API_HOST) {
     var replaceBaseUriInImages = function(element) {
       if (element[0].tagName === 'IMG') {
-        element[0].src = element[0].src.replace(element[0].baseURI, API_HOST);
+        var path = element[0].src.split('/').slice(3).join('/');
+        var src = API_HOST +  path;
+        element[0].src = src;
       }
 
       angular.forEach(element.children(), function(child) {
