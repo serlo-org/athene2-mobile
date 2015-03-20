@@ -2,20 +2,36 @@
 describe('Entity Injection Directive', function() {
   beforeEach(module('entity.injection.directive'));
 
-  var compile, rootScope;
+  var service, compile, httpBackend, rootScope;
 
-  beforeEach(inject(function($compile, $rootScope) {
+  beforeEach(inject(function($injector, $compile, $rootScope, $httpBackend) {
     compile = $compile;
+    httpBackend = $httpBackend;
     rootScope = $rootScope;
+
+    service = $injector.get('EntityService');
   }));
 
-  it('should be restricted to class', function() {
+  it('should render text-exercises', inject(function($q) {
+    spyOn(service, 'get').and.callFake(function() {
+      var deferred = $q.defer();
+      deferred.resolve({id: 1, type: 'text-exercise', content: {title: 'Title'}});
+      return deferred.promise;
+    });
+
     var scope = rootScope.$new();
 
-    var element = compile('<div class="injection"></div>')(scope);
+    httpBackend.expectGET('entity/injection/injection-text-exercise.html').respond('<h1 ng-bind="data.content.title"></h1>');
+
+    compile('<div class="injection"><a href="/1"></a></div>')(scope);
+    expect(service.get).toHaveBeenCalledWith('1');
 
     scope.$digest();
+    httpBackend.flush();
+  }));
 
-    expect(element.html()).toEqual('This is an injection!');
+  afterEach(function() {
+    httpBackend.verifyNoOutstandingExpectation();
+    httpBackend.verifyNoOutstandingRequest();
   });
 });
