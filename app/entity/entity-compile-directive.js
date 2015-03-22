@@ -1,11 +1,12 @@
 'use strict';
 angular.module('entity.compileDirective', ['config'])
-  .directive('compile', ['$compile', 'API_HOST', function ($compile, API_HOST) {
+  .directive('compile', ['$compile', '$location', 'API_HOST', function ($compile, $location, API_HOST) {
     var replaceBaseUriInImages = function(element) {
       if (element[0].tagName === 'IMG') {
-        var path = element[0].src.split('/').slice(3).join('/');
-        var src = API_HOST +  path;
-        element[0].src = src;
+        var hostRegExp= /[^\/]*\/\/[^\/]*\//;
+        var host = hostRegExp.exec($location.absUrl())[0];
+
+        element[0].src = element[0].src.replace(host, API_HOST);
       }
 
       angular.forEach(element.children(), function(child) {
